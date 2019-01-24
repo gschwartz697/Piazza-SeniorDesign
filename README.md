@@ -4,3 +4,4 @@
 # you need to activate virtual env located in env
 # need to import pymysql via pip
 # I set up connection but did not do any js at all so now just json dumps to page
+# to run: python3 app.py
