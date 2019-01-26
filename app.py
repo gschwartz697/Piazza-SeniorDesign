@@ -2,7 +2,7 @@ import pymysql
 import json
 import csv
 
-from flask import Flask, request
+from flask import Flask, request, render_template
 
 app = Flask(__name__)
 myDB = pymysql.connect(host="seniordesign.cbvhmgr3ve3r.us-east-2.rds.amazonaws.com",port=3306,user="grlpwr",passwd="ourseniordesignproject",db="seniordesign")
@@ -11,16 +11,17 @@ myDB = myDB.cursor()
 @app.route("/", methods=['GET', 'POST'])
 def main():
     if request.method == 'GET':
-        question = get_question()
-        print(get_num_questions(), " total questions")
-        print(get_num_contributions(), " total contributions")
-        return json.dumps(question)
+        #return json.dumps(question)
+        return render_template('home.html',
+            questions=get_num_questions(),
+            contribs=get_num_contributions(),
+            questions_list=get_question())
     elif request.method == 'POST':
         pass  # Handle POST request
     return "Welcome"
 
 def get_question():
-    myDB.execute("SELECT * FROM CIS120")
+    myDB.execute("SELECT question FROM CIS120")
     question = myDB.fetchall()
     return question
 
