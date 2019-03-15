@@ -1,6 +1,7 @@
 #import pymysql
 import json
 import csv
+import cgi
 
 from flask import Flask, request, render_template
 
@@ -12,12 +13,12 @@ f = open('results.csv')
 
 @app.route("/", methods=['GET', 'POST'])
 def main():
-    reader = csv.reader(f)
-    data = list(reader)
-    print(data[0])
     if request.method == 'GET':
-        return render_template('faq.html',
-            questions_list=data)
+        return render_template('upload.html')
+    if request.method == 'POST':
+            #look through file
+            return show_results()
+
     # if request.method == 'GET':
     #     #return json.dumps(question)
     #     return render_template('home.html',
@@ -27,6 +28,41 @@ def main():
     # elif request.method == 'POST':
     #     pass  # Handle POST request
     return "Welcome"
+
+@app.route("/results", methods=['GET, POST'])
+def show_results():
+    reader = csv.reader(f)
+    data = list(reader)
+    #print(data[0])
+    if request.method == 'GET':
+        return render_template('faq.html',
+            questions_list=data)
+    if request.method == 'POST':
+        #look through file
+        return get_file()
+
+    # if request.method == 'GET':
+    #     #return json.dumps(question)
+    #     return render_template('home.html',
+    #         questions=get_num_questions(),
+    #         contribs=get_num_contributions(),
+    #         questions_list=get_question())
+    # elif request.method == 'POST':
+    #     pass  # Handle POST request
+    return "Welcome"
+
+def get_file():
+    print(request.files)
+    form = cgi.FieldStorage()
+    print(form)
+    fileitem = form['fileUpload']
+    if fileitem.file:
+        linecount = 0
+        while 1:
+            line = fileitem.file.readline()
+            print(line)
+            if not line: break
+            linecount = linecount + 1
 
 # def get_question():
 #     myDB.execute("SELECT question FROM CIS120")
