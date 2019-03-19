@@ -2,12 +2,19 @@
 import json
 import csv
 import cgi
+import os
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = '/Users/stellage/Documents/YEAR4/Piazza-SeniorDesign/DatabaseCode'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'csv'])
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #myDB = pymysql.connect(host="seniordesign.cbvhmgr3ve3r.us-east-2.rds.amazonaws.com",port=3306,user="grlpwr",passwd="ourseniordesignproject",db="seniordesign")
 #myDB = myDB.cursor()
+
 
 f = open('results.csv')
 
@@ -16,9 +23,20 @@ def main():
     if request.method == 'GET':
         return render_template('upload.html')
     if request.method == 'POST':
-            #look through file
-            return show_results()
-
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return "file saved successfully"
     # if request.method == 'GET':
     #     #return json.dumps(question)
     #     return render_template('home.html',
@@ -38,8 +56,7 @@ def show_results():
         return render_template('faq.html',
             questions_list=data)
     if request.method == 'POST':
-        #look through file
-        return get_file()
+
 
     # if request.method == 'GET':
     #     #return json.dumps(question)
@@ -49,13 +66,17 @@ def show_results():
     #         questions_list=get_question())
     # elif request.method == 'POST':
     #     pass  # Handle POST request
-    return "Welcome"
+        return "Welcome"
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def get_file():
     print(request.files)
     form = cgi.FieldStorage()
     print(form)
-    fileitem = form['fileUpload']
+    fileitem = request.files["fileUpload"]
     if fileitem.file:
         linecount = 0
         while 1:
