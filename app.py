@@ -44,9 +44,15 @@ def main():
 def show_results():
     reader = csv.reader(f)
     data = list(reader)
+    print(len(data))
     #render the results page
+    labels = ["January","February","March","April","May","June","July","August"]
+    values = [10,9,8,7,6,4,7,8]
     return render_template('faq.html',
-        questions_list=data)
+        questions_list=data,
+        num_clusters=len(data),
+        labels=labels,
+        values=values)
 
 
 def allowed_file(filename):
