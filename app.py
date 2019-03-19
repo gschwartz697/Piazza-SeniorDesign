@@ -36,37 +36,18 @@ def main():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return "file saved successfully"
-    # if request.method == 'GET':
-    #     #return json.dumps(question)
-    #     return render_template('home.html',
-    #         questions=get_num_questions(),
-    #         contribs=get_num_contributions(),
-    #         questions_list=get_question())
-    # elif request.method == 'POST':
-    #     pass  # Handle POST request
-    return "Welcome"
+            # need to parse saved file here
+            print("showing results")
+            return show_results()
 
 @app.route("/results", methods=['GET, POST'])
 def show_results():
     reader = csv.reader(f)
     data = list(reader)
-    #print(data[0])
-    if request.method == 'GET':
-        return render_template('faq.html',
-            questions_list=data)
-    if request.method == 'POST':
+    #render the results page
+    return render_template('faq.html',
+        questions_list=data)
 
-
-    # if request.method == 'GET':
-    #     #return json.dumps(question)
-    #     return render_template('home.html',
-    #         questions=get_num_questions(),
-    #         contribs=get_num_contributions(),
-    #         questions_list=get_question())
-    # elif request.method == 'POST':
-    #     pass  # Handle POST request
-        return "Welcome"
 
 def allowed_file(filename):
     return '.' in filename and \

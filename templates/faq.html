@@ -1,14 +1,32 @@
 <!doctype html>
 <html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <style>
+      body {
+        background-color: #e5efff;
+      }
+      #container {
+        margin: 0 auto;
+        padding-left: 40px;
+        padding-right: 40px;
+      }
+      #title {
+        margin: 40px auto;
+        text-align: center;
+      }
+    </style>
+  </head>
    <body>
+     <div id="container">
+        <h1 id="title">Results of Analysis</h1>
 
-      <h1>Piazza Analyzer</h1>
-
-      <h4>Questions:</h4>
-      {% for question in questions_list %}
-            {{question}}
-            <br>
-      {% endfor %}
+        <h4>Questions:</h4>
+        {% for question in questions_list %}
+              {{question}}
+              <br><br>
+        {% endfor %}
+    </div>
 
    </body>
 </html>
